@@ -1,0 +1,4 @@
+
+
+docker build -t 06171002/devmix-vue:0.3 .
+docker push 06171002/devmix-vue:0.3
