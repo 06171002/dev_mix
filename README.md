@@ -91,7 +91,7 @@
 ## ERD
 ![image](https://github.com/user-attachments/assets/66f82698-c20f-43f1-b7fa-8f5f0e0123b1)
 
-## 프로젝트 후기
+## 프로젝트 담당 기능 구현 및 문제 해결 과정 세부 내용
 https://jagged-sodalite-d43.notion.site/Devmix-1586b964de0380e1be09d58e7241fd64
 
 
