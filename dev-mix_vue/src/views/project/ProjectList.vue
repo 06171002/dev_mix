@@ -113,6 +113,17 @@
             북마크만 보기
           </button>
 
+          <div>
+            <h1>알림</h1>
+            <ul class="text-sm mt-2">
+              <li v-for="(notification, index) in notifications" :key="notification.id">
+                {{ notification.content }} <!-- 알림 내용을 표시 -->
+                <button @click="markAsRead(index)">읽음 처리</button>
+              </li>
+            </ul>
+
+          </div>
+
           <button
             class="min-w-36 max-h-8 px-4 py-1 my-5 border border-gray rounded-full outline-none text-gray-800 hover:border-[#d10000]"
             :class="{
@@ -254,6 +265,69 @@ import { getLocation, getPositions, getTechstacks, listProject, scrapProject, se
 import router from '@/router';
 import { useUserStore } from '@/store/userStore';
 import LoginModal from '@/views/Component/LoginModal.vue';
+import { onMounted, onBeforeUnmount } from 'vue';
+
+const notifications = ref([]); // 알림 목록
+const eventSource = ref(null); // SSE 이벤트 소스
+
+// SSE 초기화
+const initializeSSE = () => {
+  const token = localStorage.getItem("token"); // 사용자 인증 토큰
+
+  if (!token) {
+    console.error('토큰이 없습니다. SSE 연결을 중단합니다.');
+    return;
+  }
+
+  const sseUrl = `http://localhost:8080/api/v1/notifications/connect?token=${encodeURIComponent(token)}`;
+  eventSource.value = new EventSource(sseUrl);
+
+  eventSource.value.onopen = () => {
+    console.log('SSE 연결이 성공적으로 열렸습니다.');
+  };
+
+  eventSource.value.addEventListener("sse", (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      console.log('SSE 수신 데이터:', data);
+      notifications.value.push(data);
+    } catch (error) {
+      console.error('SSE 데이터 처리 중 오류:', error);
+    }
+  });
+
+  const handleServerData = (data) => {
+    // 받은 데이터를 활용하여 상태를 업데이트하거나 UI를 갱신
+    console.log('받은 데이터:', data);
+  };
+
+  eventSource.value.onerror = (error) => {
+    console.error('SSE 연결 오류:', error);
+    eventSource.value.close();
+  };
+};
+
+// SSE를 통한 프로젝트 목록 업데이트
+const updateProjectList = (updatedProjects) => {
+  // 기존 목록과 새 데이터를 병합하거나 교체
+  arr.value = arr.value.map((item) =>
+      updatedProjects.find((update) => update.boardId === item.boardId) || item
+  );
+};
+
+// 컴포넌트 마운트 시 SSE 연결
+onMounted(() => {
+  initializeSSE();
+});
+
+// 컴포넌트 언마운트 시 SSE 연결 해제
+onBeforeUnmount(() => {
+  if (eventSource.value) {
+    eventSource.value.close();
+    eventSource.value = null;
+  }
+});
+
 
 const searchText = ref('');
 const onlyBookmarked = ref(false);
@@ -355,47 +429,6 @@ const toggleBookmark = async (item) => {
     console.error('북마크 오류:', error);
   }
 };
-
-// 정렬
-// const activeButton = ref('latest');
-
-// localStorage에서 상태읽기
-// watchEffect(() => {
-//   const savedButton = localStorage.getItem('activeButton');
-//   if (savedButton) {
-//     activeButton.value = savedButton;
-//   }
-// });
-
-// 클릭된 버튼을 localStorage에 저장
-// const setActive = (button) => {
-//   activeButton.value = button;
-//   localStorage.setItem('activeButton', button); // localStorage에 버튼 상태 저장
-// };
-
-// const latestSort = () => {
-//   // arr.value.sort((a, b) => b.boardId - a.boardId);
-//   setActive('latest');
-// };
-// const famousSort = () => {
-//   // arr.value.sort((a, b) => b.viewCount - a.viewCount);
-//   setActive('famous');
-// };
-// const registerSort = () => {
-//   // arr.value.sort((a, b) => a.boardId - b.boardId);
-//   setActive('register');
-// };
-
-// 선택된 정렬을 배열에 적용
-// const applySort = () => {
-//   if (activeButton.value === 'latest') {
-//     arr.value.sort((a, b) => b.boardId - a.boardId);
-//   } else if (activeButton.value === 'famous') {
-//     arr.value.sort((a, b) => b.viewCount - a.viewCount);
-//   } else if (activeButton.value === 'register') {
-//     arr.value.sort((a, b) => a.boardId - b.boardId);
-//   }
-// };
 
 // 포지션 드롭다운
 const positionOptions = ref([]);
@@ -548,27 +581,4 @@ watchEffect(() => {
   getTotalPages();
   searchfilter;
 });
-
-// onUnmounted(() => {
-//   window.removeEventListener('click', handleClickOutside);
-// });
-
-// page번호 선택했을때 호출하는 함수.
-// const selectPageNum = async(num)=>{
-//   const res = await listProject(num);
-//   // arr.value = res;
-//   // 각 프로젝트에 'isBookmarked'와 'totalRequiredCount' 속성 추가
-//   arr.value = res.map((item) => {
-//       const totalRequiredCount = item.positions.reduce((sum, position) => {
-//         return sum + position.requiredCount;
-//       }, 0);
-
-//       return {
-//         ...item,
-//         isBookmarked: false, // 북마크 상태 초기화
-//         totalRequiredCount // 총 인원 수
-//       };
-//     });
-//   console.log(res);
-// }
 </script>

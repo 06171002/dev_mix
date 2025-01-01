@@ -104,6 +104,19 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         return boardQueryDtos;
     }
 
+    @Override
+    public Long countBySearch(BooleanBuilder builder) {
+
+        return queryFactory.select(board.id.countDistinct())
+                .from(board)
+                .innerJoin(boardPosition).on(board.id.eq(boardPosition.board.id))
+                .innerJoin(boardTechStack).on(board.id.eq(boardTechStack.board.id))
+                .leftJoin(scrap).on(board.id.eq(scrap.board.id))
+                .where(builder)
+                .fetchOne();
+
+    }
+
     private void getBoardPositionAndBoardTechStack(List<BoardQueryDto> boardQueryDtos) {
         List<BoardPositionQueryDto> boardPositionQueryDtos = queryFactory.select(Projections.bean(
                         BoardPositionQueryDto.class,

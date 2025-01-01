@@ -1,6 +1,7 @@
 package msa.devmix.service.implement;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import msa.devmix.domain.constant.NotificationType;
@@ -51,12 +52,18 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public SseEmitter connect(User user) {
 
+
         SseEmitter oldSseEmitter = emitterRepository.findByUsername(user.getUsername());
         if (oldSseEmitter != null) {
-            return oldSseEmitter;
+            log.info("User already connected to emitter");
+            emitterRepository.deleteByUsername(user.getUsername());
         }
 
+
         SseEmitter sseEmitter = emitterRepository.save(user.getUsername(), new SseEmitter(DEFAULT_TIMEOUT));
+        log.info("username {}", user.getUsername());
+
+
 
         //Configure callbacks for a specific emitter
         sseEmitter.onCompletion(() -> {
@@ -67,6 +74,7 @@ public class NotificationServiceImpl implements NotificationService {
             log.info("onTimeout callback");
             emitterRepository.deleteByUsername(user.getUsername());
         });
+
 
         //Send dummy event to prevent 503 errors
         try {
@@ -83,12 +91,24 @@ public class NotificationServiceImpl implements NotificationService {
                 .filter(notification -> !notification.isRead())
                 .collect(Collectors.toList());
 
+        log.info("notifications : {}", notifications);
+
         //읽지 않은 알림 전송
         if (!notifications.isEmpty()) {
             sendNotifications(user.getUsername(), sseEmitter, notifications);
         }
 
+
         return sseEmitter;
+    }
+
+    public void disconnect(String username) {
+        SseEmitter emitter = emitterRepository.findByUsername(username);
+        if ( emitter != null) {
+            log.info("sse disconnect callback");
+            emitter.complete();
+            emitterRepository.deleteByUsername(username);
+        }
     }
 
     /**
@@ -100,6 +120,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.save(Notification.createNotification(user, notificationType, content));
 
         String username = user.getUsername();
+
 
         //특정 유저가 연결돼있는지 확인 후 존재한다면 알림 전송
         SseEmitter sseEmitter = emitterRepository.findByUsername(username);
@@ -115,6 +136,7 @@ public class NotificationServiceImpl implements NotificationService {
             emitter.send(SseEmitter.event() //SseEmitter.event() 호출하여 SseEventBuilder 객체 생성
                     .name("sse")
                     .data(NotificationDto.from(data)));
+
         } catch (IOException exception) {
             emitterRepository.deleteByUsername(username);
         }

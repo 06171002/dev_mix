@@ -27,8 +27,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     public static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(14);
     public static final Duration ACCESS_TOKEN_DURATION = Duration.ofDays(1);
+//    public static final String REDIRECT_PATH = "http://main.devmix.store/";
 //    public static final String REDIRECT_PATH = "http://localhost:5173/";
-    public static final String REDIRECT_PATH = "/";
+//    public static final String REDIRECT_PATH = "/";
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -47,7 +48,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         //액세스 토큰 생성
         String accessToken = jwtProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-        String targetUrl = getTargetUrl(accessToken);
+        String targetUrl = getTargetUrl(request, accessToken);
 
         //인증 관련 설정값, 쿠키 제거
         clearAuthenticationAttributes(request, response);
@@ -74,8 +75,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     //액세스 토큰을 추가할 path
-    private String getTargetUrl(String token) {
-        return UriComponentsBuilder.fromUriString(REDIRECT_PATH)
+    private String getTargetUrl(HttpServletRequest request, String token) {
+        String redirectPath = request.getHeader("Origin");
+        if (redirectPath == null) {
+            redirectPath = request.getHeader("Referer");
+        }
+        if (redirectPath == null) {
+            // 기본값 설정 (예: 로컬호스트)
+            redirectPath = "http://localhost:5173";
+        }
+        return UriComponentsBuilder.fromUriString(redirectPath)
                 .queryParam("token", token)
                 .build()
                 .toUriString();

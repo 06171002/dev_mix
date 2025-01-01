@@ -25,34 +25,54 @@ public class BoardV3Controller {
 
     private final BoardService boardService;
 
-//    @GetMapping("querydsl")
-//    public ResponseEntity<?> boards(@RequestParam(defaultValue = "1") int pageNumber,
-//                                    @RequestParam(defaultValue = "16") int pageSize,
-//                                    @RequestParam(required = false, value = "location") String location,
-//                                    @RequestParam(required = false) List<String> positions,
-//                                    @RequestParam(required = false) List<String> techStacks,
-//                                    @RequestParam(required = false) boolean bookmarked,
-//                                    @RequestParam(required = false, value = "recruitmentStatus") String recruitmentStatus,
-//                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
-//        User user = null;
-//        if(userPrincipal != null) user = userPrincipal.getUser();
-//
-//        return ResponseEntity
-//                .ok()
-//                .body(ResponseDto
-//                        .success(boardService
-//                                .getBoardsWithUser(
-//                                        pageNumber,
-//                                        pageSize,
-//                                        location,
-//                                        positions,
-//                                        techStacks,
-//                                        bookmarked,
-//                                        recruitmentStatus,
-//                                        user)
-//                                .stream()
-//                                .map(BoardListResponse::from)
-//                                .toList()));
-//
-//    }
+    @GetMapping()
+    public ResponseEntity<?> boards(@RequestParam(defaultValue = "1") int pageNumber,
+                                    @RequestParam(defaultValue = "16") int pageSize,
+                                    @RequestParam(required = false, value = "location") String location,
+                                    @RequestParam(required = false) List<String> positions,
+                                    @RequestParam(required = false) List<String> techStacks,
+                                    @RequestParam(required = false) boolean bookmarked,
+                                    @RequestParam(required = false, value = "recruitmentStatus") String recruitmentStatus,
+                                    @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = null;
+        if(userPrincipal != null) user = userPrincipal.getUser();
+
+        return ResponseEntity
+                .ok()
+                .body(ResponseDto
+                        .success(boardService
+                                .getBoardsWithUser(
+                                        pageNumber,
+                                        pageSize,
+                                        location,
+                                        positions,
+                                        techStacks,
+                                        bookmarked,
+                                        recruitmentStatus,
+                                        user)
+                                .stream()
+                                .map(BoardListResponse::from)
+                                .toList()));
+
+    }
+
+    @GetMapping("/total-boards")
+    public ResponseEntity<?> totalBoards(@RequestParam(required = false, value = "location") String location,
+                                         @RequestParam(required = false) List<String> positions,
+                                         @RequestParam(required = false) List<String> techStacks,
+                                         @RequestParam(required = false) boolean bookmarked,
+                                         @RequestParam(required = false, value = "recruitmentStatus") String recruitmentStatus,
+                                         @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = null;
+        if(userPrincipal != null) user = userPrincipal.getUser();
+
+
+        return ResponseEntity.ok().body(ResponseDto.success(boardService.getBoardsCount(
+                location,
+                positions,
+                techStacks,
+                bookmarked,
+                recruitmentStatus,
+                user)));
+    }
 }

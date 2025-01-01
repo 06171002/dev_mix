@@ -1,8 +1,7 @@
 package msa.devmix.service;
 
 import msa.devmix.domain.user.User;
-import msa.devmix.dto.UserBoardsDto;
-import msa.devmix.dto.UserWithPositionTechStackDto;
+import msa.devmix.dto.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,4 +16,8 @@ public interface UserService {
     void saveUserProfile(UserWithPositionTechStackDto userWithPositionTechStackDto, MultipartFile profileImage) throws IOException;
 
     List<UserBoardsDto> getUserBoards(Long userId, Pageable pageable);
+    List<CommentDto> findUserComments(Long userId, Pageable pageable);
+    List<ApplyDto> findUserApplies(User user);
+    List<ApplicantsDto> findApplicants(Long userId);
+    List<ScrapDto> findUserScrapList(Long userId);
 }

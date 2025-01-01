@@ -2,23 +2,23 @@ package msa.devmix.service.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import msa.devmix.domain.board.Board;
+import msa.devmix.domain.board.*;
 import msa.devmix.domain.common.Position;
 import msa.devmix.domain.common.TechStack;
 import msa.devmix.domain.user.User;
 import msa.devmix.domain.user.UserPosition;
 import msa.devmix.domain.user.UserTechStack;
-import msa.devmix.dto.TechStackDto;
-import msa.devmix.dto.UserBoardsDto;
-import msa.devmix.dto.UserWithPositionTechStackDto;
+import msa.devmix.dto.*;
 import msa.devmix.exception.CustomException;
 import msa.devmix.exception.ErrorCode;
 import msa.devmix.repository.*;
 import msa.devmix.service.FileService;
 import msa.devmix.service.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,6 +41,10 @@ public class UserServiceImpl implements UserService {
     private final FileService fileService;
     private final PositionRepository positionRepository;
     private final TechStackRepository techStackRepository;
+    private final CommentRepository commentRepository;
+    private final ApplyRepository applyRepository;
+    private final BoardPositionRepository boardPositionRepository;
+    private final ScrapRepository scrapRepository;
 
     //유저 ID로 유저 엔티티 조회
     @Override
@@ -191,5 +195,72 @@ public class UserServiceImpl implements UserService {
 
         userTechStackRepository.deleteAllInBatch(removeUserTechStacks);
         userTechStackRepository.saveAll(updateUserTechStacks);
+    }
+
+
+    @Override
+    public List<CommentDto> findUserComments(Long userId, Pageable pageable) {
+
+        Page<Comment> comments = commentRepository.findByUserId(userId, pageable)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        return comments.stream()
+                .map(CommentDto::from)
+                .toList();
+    }
+
+    @Override
+    public List<ApplyDto> findUserApplies(User user) {
+
+        List<Apply> applies = applyRepository.findByUser(user);
+
+        if (!CollectionUtils.isEmpty(applies)) {
+            List<BoardPosition> boardPositions = applies.stream().map(Apply::getBoardPosition)
+                    .toList();
+        } else {
+            throw new CustomException(ErrorCode.APPLY_NOT_FOUND);
+        }
+
+
+        return applies.stream()
+                .map(ApplyDto::from)
+                .toList();
+    }
+
+    @Override
+    public List<ApplicantsDto> findApplicants(Long userId) {
+        // 유저 작성 게시글 조회
+        List<Board> boards = boardRepository.findByUserId(userId, null)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+//        List<Long> boardIds = boards.stream().map(Board::getId).toList();
+        // 게시글로 boardPosition 조회
+        List<BoardPosition> boardPositions = boardPositionRepository.findByBoardIn(boards);
+
+
+//        List<BoardPosition> boardPositions = boardPositionRepository.findAllByBoardIdIn(boardIds);
+
+        // boardPosition 으로 apply 조회
+        List<Apply> applies = applyRepository.findByBoardPositionIn(boardPositions);
+
+//        Map<Long, List<Apply>> collect = applies.stream()
+//                .collect(Collectors.groupingBy(apply -> apply.getBoardPosition().getBoard().getId()));
+
+//        Map<Long, List<ApplicantsDto>> collect1 = collect.entrySet()
+//                .stream()
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey, // key 그대로 유지
+//                        entry -> entry.getValue().stream().map(ApplicantsDto::from).toList()
+//                ));
+
+        return applies.stream().map(ApplicantsDto::from).toList();
+    }
+
+    @Override
+    public List<ScrapDto> findUserScrapList(Long userId) {
+
+        List<Scrap> scrapList = scrapRepository.findByUserId(userId);
+
+        return List.of();
     }
 }

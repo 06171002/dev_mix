@@ -11,8 +11,8 @@
 
         <div class="m-5 justify-center">
           <div class="flex flex-col gap-3">
-            <a href="http://main.devmix.store:50051/oauth2/authorization/google"><img src="/img/sns_G.png" /></a>
-            <a href="http://main.devmix.store:50051/oauth2/authorization/kakao"><img src="/img/sns_k.png" /></a>
+            <a href="http://localhost:8080/oauth2/authorization/google"><img src="/img/sns_G.png" /></a>
+            <a href="http://localhost:8080/oauth2/authorization/kakao"><img src="/img/sns_k.png" /></a>
             <a href="http://main.devmix.store:50051/oauth2/authorization/naver"><img src="/img/sns_n.png" /></a>
           </div>
         </div>

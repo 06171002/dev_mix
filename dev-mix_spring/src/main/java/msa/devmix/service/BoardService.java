@@ -23,6 +23,7 @@ public interface BoardService {
 
     List<CommentDto> getComments(Long boardId);
     void saveComment(CommentDto commentDto);
+    void updateComment(CommentDto dto);
     void deleteComment(Long boardId, Long commentId, User user);
 
     List<BoardListResponseTest> findAllBoards(Pageable pageable);
@@ -36,4 +37,10 @@ public interface BoardService {
                                           String recruitmentStatus,
                                           User user);
 
+    Long getBoardsCount(String location,
+                        List<String> positions,
+                        List<String> techStacks,
+                        boolean bookmarked,
+                        String recruitmentStatus,
+                        User user);
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -21,5 +22,14 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     )
     List<Comment> findByBoardId(@Param("boardId") Long boardId);
 
+    @Query("SELECT c " +
+            "FROM Comment AS c " +
+            "JOIN FETCH c.user " +
+            "WHERE c.user.id = :userId ")
+    Optional<Page<Comment>> findByUserId(@Param("userId") Long userId, Pageable pageable);
+
     void deleteAllByBoardId(Long boardId);
+
+    @Query("SELECT c FROM Comment c WHERE c.board.id = :boardId AND c.id = :commentId")
+    Optional<Comment> findByIdAndBoardId(@Param("commentId") Long commentId, @Param("boardId") Long boardId);
 }

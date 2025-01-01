@@ -40,4 +40,8 @@ public class Comment extends BaseTimeEntity {
     public static Comment of(Board board, User user, String content) {
         return new Comment(board, user, content);
     }
+
+    public void updateComment(String content) {
+        this.content = content;
+    }
 }

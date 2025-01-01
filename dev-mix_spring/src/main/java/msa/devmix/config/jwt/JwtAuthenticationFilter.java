@@ -28,6 +28,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader("Authorization");
         String token = getAccessToken(authorizationHeader);
 
+        if(request.getRequestURI().contains("notifications")){
+            token = request.getParameter("token");
+            log.info("token : {}",token);
+        }
+
         try {
             if (jwtProvider.validToken(token)) {
                 log.info("Filter validation success!");

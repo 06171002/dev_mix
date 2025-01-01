@@ -13,4 +13,6 @@ public interface BoardRepositoryCustom {
     List<BoardQueryDto> findBoardQueryDtoBySearch(int pageNumber,
                                                   int pageSize,
                                                   BooleanBuilder builder);
+
+    Long countBySearch(BooleanBuilder builder);
 }

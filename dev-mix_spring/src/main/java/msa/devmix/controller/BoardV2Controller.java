@@ -183,6 +183,26 @@ public class BoardV2Controller {
                 .body(ResponseDto.success());
     }
 
+
+    //댓글 수정
+    @PutMapping("/{board-id}/comments")
+    public ResponseEntity<?> updateComment(@PathVariable("board-id") @Min(1) Long boardId,
+                                           @Valid @RequestBody UpdateCommentRequest updateCommentRequest,
+                                           @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+
+        boardService.updateComment(updateCommentRequest.toDto(
+                updateCommentRequest.getId(),
+                boardId,
+                userPrincipal.getUser(),
+                updateCommentRequest.getContent()
+        ));
+
+        return ResponseEntity.ok()
+                .body(ResponseDto.success());
+    }
+
     //댓글 삭제
     @DeleteMapping("/{board-id}/comments/{comment-id}")
     public ResponseEntity<?> deleteComment(@PathVariable("board-id") @Min(1) Long boardId,

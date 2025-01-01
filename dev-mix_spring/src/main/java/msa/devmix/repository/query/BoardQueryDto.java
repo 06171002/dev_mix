@@ -2,6 +2,7 @@ package msa.devmix.repository.query;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import msa.devmix.domain.constant.Location;
 
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(of = "boardId")
+@NoArgsConstructor
 public class BoardQueryDto {
 
     private Long boardId;

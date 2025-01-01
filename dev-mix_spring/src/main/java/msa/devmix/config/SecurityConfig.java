@@ -67,6 +67,7 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/api/v1/tokens"),
                                 new AntPathRequestMatcher("/api/v1/boards/**", HttpMethod.GET.name()),
                                 new AntPathRequestMatcher("/api/v2/boards/**", HttpMethod.GET.name()),
+                                new AntPathRequestMatcher("/api/v3/boards/**", HttpMethod.GET.name()),
                                 new AntPathRequestMatcher("/api/v1/users/*", HttpMethod.GET.name())
                         ).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()

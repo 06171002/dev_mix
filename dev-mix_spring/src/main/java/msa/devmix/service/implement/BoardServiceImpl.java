@@ -115,18 +115,13 @@ public class BoardServiceImpl implements BoardService {
             throw new CustomException(ErrorCode.POSITION_NOT_FOUND);
         }
 
-//        boardPositionDtos
-//                .stream()
-//                .map(boardPositionDto -> {
-//                    if (positionRepository.findByPositionName(boardPositionDto.getPositionName()) != null) {
-//                        return boardPositionDto.toEntity(board, positionRepository.findByPositionName(boardPositionDto.getPositionName()));
-//                    } else {
-//                        throw new CustomException(ErrorCode.POSITION_NOT_FOUND);
-//                    }
-//                })
-//                .forEach(boardPositionRepository::save);
         boardPositionDtos.stream()
-                .map(boardPositionDto -> boardPositionDto.toEntity(board, positionRepository.findByPositionName(boardPositionDto.getPositionName()).get(), boardPositionDto.getRequiredCount()))
+                .map(boardPositionDto ->
+                        boardPositionDto
+                                .toEntity(
+                                        board,
+                                        positionRepository.findByPositionName(boardPositionDto.getPositionName()).get(),
+                                        boardPositionDto.getRequiredCount()))
                 .forEach(boardPositionRepository::save);
 
 
@@ -159,7 +154,8 @@ public class BoardServiceImpl implements BoardService {
                             List<BoardTechStackDto> boardTechStackDtos,
                             MultipartFile boardImage) throws IOException {
 
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ErrorCode.BOARD_NOT_FOUND));
 
         if (board.getImageUrl() != null && ( boardDto.getImageUrl() == null || (boardImage != null && !boardImage.isEmpty()))) {
             String imageUrl = extractImageUrl(board.getImageUrl());
@@ -200,7 +196,11 @@ public class BoardServiceImpl implements BoardService {
 
         // 기존 리스트에서 새로운 데이터에 없는 항목은 삭제
         List<BoardPosition> deleteBoardPosition  = existingBoardPositions.stream()
-                .filter(bp -> boardPositionDtos.stream().noneMatch(dto -> dto.getPositionName().equals(bp.getPosition().getPositionName())))
+                .filter(bp ->
+                        boardPositionDtos
+                                .stream()
+                                .noneMatch(dto ->
+                                        dto.getPositionName().equals(bp.getPosition().getPositionName())))
                 .toList();
 
         boardPositionRepository.deleteAll(deleteBoardPosition);
@@ -289,18 +289,11 @@ public class BoardServiceImpl implements BoardService {
         return boards;
     }
 
+    // 북마크 여부 조회
     @Override
     public List<BoardQueryDto> getBookMarkedBoards(User user, int pageNumber, int pageSize) {
         List<BoardQueryDto> boards = boardRepository.findBoards(pageNumber, pageSize);
 
-//        boards.forEach(boardQueryDto ->
-//        {
-//            if (scrapRepository.findByBoardId(boardQueryDto.getBoardId()) == null) {
-//                boardQueryDto.setBookmarked(false);
-//            } else {
-//                boardQueryDto.setBookmarked(true);
-//            }
-//        });
 
         // 현재 페이지 boardId들
         List<Long> boardIds = boards.stream()
@@ -309,7 +302,8 @@ public class BoardServiceImpl implements BoardService {
 
         List<Scrap> scraps = scrapRepository.findByBoardIdInAndUser(boardIds, user);
 
-        Map<Long, Scrap> scrapMap = scraps.stream().collect(Collectors.toMap(scrap -> scrap.getBoard().getId(), scrap -> scrap));
+        Map<Long, Scrap> scrapMap = scraps
+                .stream().collect(Collectors.toMap(scrap -> scrap.getBoard().getId(), scrap -> scrap));
 
         boards.forEach(boardQueryDto -> {
             if (scrapMap.get(boardQueryDto.getBoardId()) == null) {
@@ -398,6 +392,21 @@ public class BoardServiceImpl implements BoardService {
         );
     }
 
+    // 댓글 수정
+    @Override
+    @Transactional
+    public void updateComment(CommentDto dto) {
+
+        Comment comment = commentRepository.findByIdAndBoardId(dto.getCommentId(), dto.getBoardId())
+                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+        if (!comment.getUser().getId().equals(dto.getUser().getId())) {
+            throw new CustomException(ErrorCode.PERMISSION_DENIED);
+        }
+
+        comment.updateComment(dto.getContent());
+    }
+
     //댓글 삭제
     @Transactional
     public void deleteComment(Long boardId, Long commentId, User user) {
@@ -417,22 +426,12 @@ public class BoardServiceImpl implements BoardService {
     //N+1 이슈 해결하기 전 로직
     @Override
     public List<BoardListResponseTest> findAllBoards(Pageable pageable) {
+        // Board Entity 정보 가져오기
         Page<Board> boards = boardRepository.findAll(pageable);
 
         List<Long> boardIds = boards.stream()
                 .map(Board::getId)
                 .toList();
-
-
-//        List<BoardPosition> boardPositions = boardIds.stream()
-//                .map(boardId -> boardPositionRepository.findById(boardId)
-//                        .orElseThrow(() -> new CustomException(ErrorCode.BOARD_POSITION_NOT_FOUND)))
-//                .toList();
-//
-//        List<BoardTechStack> boardTechStacks = boardIds.stream()
-//                .map(boardId -> boardTechStackRepository.findById(boardId)
-//                        .orElseThrow(() -> new CustomException(ErrorCode.TECH_STACK_NOT_FOUND)))
-//                .toList();
 
         List<BoardListResponseTest> boardListResponseTests = boards.stream()
                 .map(board -> BoardListResponseTest.of(
@@ -445,10 +444,7 @@ public class BoardServiceImpl implements BoardService {
                         board.getLocation().toString()))
                 .toList();
 
-//        Map<Long, List<BoardPositionListResponseTest>> boardPositionMap = BoardPositionListResponseTest.from(boardPositions)
-//                .stream()
-//                .collect(Collectors.groupingBy(BoardPositionListResponseTest::getBoardId));
-
+        // 가져온 Board ID별로 BoardPosition, BoardTechStack 가져오기
         Map<Long, List<BoardPositionListResponseTest>> boardPositionMap = boardIds.stream()
                 .flatMap(boardId -> BoardPositionListResponseTest.from(boardPositionRepository.findByBoardId(boardId)).stream())
                 .collect(Collectors.groupingBy(BoardPositionListResponseTest::getBoardId));
@@ -463,16 +459,8 @@ public class BoardServiceImpl implements BoardService {
         boardListResponseTests.forEach(boardListResponseTest ->
                 boardListResponseTest.setTechStacks(boardTechStackMap.get(boardListResponseTest.getBoardId())));
 
-//        Map<Long, List<BoardTechStackListResponseTest>> boardTechStackMap = BoardTechStackListResponseTest.from(boardTechStacks)
-//                .stream().collect(Collectors.groupingBy(BoardTechStackListResponseTest::getBoardId));
-
-//        boardListResponseTests.forEach(boardListResponseTest ->
-//                boardListResponseTest.setPositions(boardPositionMap.get(boardListResponseTest.getBoardId())));
-
-//        boardListResponseTests.forEach(boardListResponseTest ->
-//                boardListResponseTest.setTechStacks(boardTechStackMap.get(boardListResponseTest.getBoardId())));
-
         return boardListResponseTests;
+
     }
 
     @Override
@@ -491,6 +479,7 @@ public class BoardServiceImpl implements BoardService {
                         pageSize,
                         builder(location, positions, techStacks, recruitmentStatus, bookmarked, user));
 
+        // 스크랩 여부 조회
         Map<Long, Scrap> scrapMap = scrapRepository.findByBoardIdInAndUser(boardQueryDtos.stream().map(BoardQueryDto::getBoardId).toList(), user)
                 .stream().collect(Collectors.toMap(scrap -> scrap.getBoard().getId(), scrap -> scrap));
 
@@ -504,6 +493,17 @@ public class BoardServiceImpl implements BoardService {
 
         return boardQueryDtos;
 
+    }
+
+    @Override
+    public Long getBoardsCount(String location,
+                               List<String> positions,
+                               List<String> techStacks,
+                               boolean bookmarked,
+                               String recruitmentStatus,
+                               User user) {
+
+        return boardRepository.countBySearch(builder(location, positions, techStacks, recruitmentStatus, bookmarked, user));
     }
 
     private BooleanBuilder builder(String location,

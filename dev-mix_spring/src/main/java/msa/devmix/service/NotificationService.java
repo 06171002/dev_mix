@@ -8,4 +8,5 @@ public interface NotificationService {
     SseEmitter connect(User user);
     void send(User user, NotificationType notificationType, String content);
     void patchNotification(User user, Long notificationId);
+    void disconnect(String username);
 }

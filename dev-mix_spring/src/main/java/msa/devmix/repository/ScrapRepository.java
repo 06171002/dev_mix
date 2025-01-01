@@ -16,4 +16,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
     @Query("SELECT s FROM Scrap s WHERE s.board.id IN :boardIds AND s.user = :user")
     List<Scrap> findByBoardIdInAndUser(List<Long> boardIds, User user);
+
+    List<Scrap> findByUserId(Long userId);
 }
