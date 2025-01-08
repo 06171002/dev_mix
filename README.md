@@ -44,6 +44,7 @@
 ## 주요 기능 세부
 
 ### -로그인
+<img src="https://github.com/user-attachments/assets/398a6322-2e3c-4851-baa2-78b30f7a2d4e">
 <img src="https://github.com/user-attachments/assets/c9e9ca65-ed46-4926-85a6-07a7ad7e62a5" width="600" />
 <img src="https://github.com/user-attachments/assets/b3282ae4-095d-4fbb-a5e2-faa769175a51" width="400" />
 
