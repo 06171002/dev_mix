@@ -53,13 +53,13 @@
 
 
 ### -프로필 수정
-<img src="https://github.com/user-attachments/assets/e3c5e36e-fa1c-4f8f-922f-9856dc9fddf1" width="600" />
-<img src="https://github.com/user-attachments/assets/1cd2b212-581a-4d04-9667-8f84fbb0514d" width="400" />
+<img src="https://github.com/user-attachments/assets/41e08a23-1a4d-4b58-999c-ba61e8452445">
 
 ![mypage3](https://github.com/user-attachments/assets/8160aaed-239c-4b77-af15-73ce21d79d8f)
-
-- 추가 정보 입력 후 확인 버튼 클릭 시 회원가입이 완료되고 메인 페이지로 이동. 데이터베이스에 정보들 저장.           
-- 이후 마이 페이지에서 프로필 이미지, 기술 스택, 포지션 등 정보 수정 가능.
+           
+- 마이 페이지에서 프로필 이미지, 기술 스택, 포지션 등 정보 수정 가능.
+- 프로필 수정 페이지 이동시 기존 프로필 정보 불러오기.
+- 닉네임 변경시 중복확인 요구. 
 
 
 ### -프로젝트 모집글 작성
