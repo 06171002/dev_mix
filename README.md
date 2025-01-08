@@ -46,6 +46,7 @@
 ### -로그인
 https://github.com/user-attachments/assets/df991d5c-6630-445a-8abb-da1c0d6860a9
 https://github.com/user-attachments/assets/a7a4b832-d8dd-49aa-8b6a-54463ea3b9c3
+<img src="https://github.com/user-attachments/assets/a7a4b832-d8dd-49aa-8b6a-54463ea3b9c3" width="800" />
 <img src="https://github.com/user-attachments/assets/398a6322-2e3c-4851-baa2-78b30f7a2d4e" width="800" />
 <img src="https://github.com/user-attachments/assets/c9e9ca65-ed46-4926-85a6-07a7ad7e62a5" width="600" />
 <img src="https://github.com/user-attachments/assets/b3282ae4-095d-4fbb-a5e2-faa769175a51" width="400" />
