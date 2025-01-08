@@ -50,6 +50,7 @@ https://github.com/user-attachments/assets/a7a4b832-d8dd-49aa-8b6a-54463ea3b9c3
 <img src="https://github.com/user-attachments/assets/398a6322-2e3c-4851-baa2-78b30f7a2d4e" width="800" />
 <img src="https://github.com/user-attachments/assets/c9e9ca65-ed46-4926-85a6-07a7ad7e62a5" width="600" />
 <img src="https://github.com/user-attachments/assets/b3282ae4-095d-4fbb-a5e2-faa769175a51" width="400" />
+<img src="https://github.com/user-attachments/assets/ee829773-7cdd-4130-88a9-61997b2bbb5b">
 
 - 소셜 로그인 후 추가 정보 입력 페이지로 이동. 소셜 로그인 시 토큰만 발급된 준회원과 같은 개념. 정보 입력 페이지에서 다른 페이지로 이동하거나 취소 버튼 클릭 시 토큰은 삭제되고 비회원인 상태로 변경되어 다시 소셜 로그인을 해야 한다. 
 
