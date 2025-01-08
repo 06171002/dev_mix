@@ -54,12 +54,11 @@
 
 ### -프로필 수정
 <img src="https://github.com/user-attachments/assets/41e08a23-1a4d-4b58-999c-ba61e8452445">
-
-![mypage3](https://github.com/user-attachments/assets/8160aaed-239c-4b77-af15-73ce21d79d8f)
            
 - 마이 페이지에서 프로필 이미지, 기술 스택, 포지션 등 정보 수정 가능.
 - 프로필 수정 페이지 이동시 기존 프로필 정보 불러오기.
-- 닉네임 변경시 중복확인 요구. 
+- 닉네임 변경시 중복확인 요구.
+- 완료버튼 클릭시 변경사항 저장 후 마이페이지에서 변경된 사항 확인. 
 
 
 ### -프로젝트 모집글 작성
