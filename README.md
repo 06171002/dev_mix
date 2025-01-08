@@ -61,12 +61,11 @@
 - 완료버튼 클릭시 변경사항 저장 후 마이페이지에서 변경된 사항 확인. 
 
 
-### -프로젝트 모집글 작성
-<img src="https://github.com/user-attachments/assets/56302653-478b-4e62-bf47-8711a30f257d" width="600" />
-<img src="https://github.com/user-attachments/assets/6a9e8658-2563-440b-9be3-3fb51cd0c304" width="400" />
+### -프로젝트 지원
+<img src="https://github.com/user-attachments/assets/85f61c22-cc51-4899-a273-ec8f3d966e0b">
 
-- 회원가입 완료한 사용자는 글쓰기 버튼을 클릭하여 프로젝트 모집 게시글 작성 가능.
-- 모집하는 프로젝트 사용 기술 스택, 지역, 구하는 포지션별로 인원수 설정, 프로젝트 진행 기간, 상세 내용 등 입력 후 등록 버튼 클릭 시 메인 페이지로 이동하고 최신 순으로 게시글이 보인다. 
+- 로그인, 회원가입 완료한 유저는 원하는 프로젝트, 원하는 포지션에 지원가능.
+- 하나의 프로젝트에 하나의 지원만 가능하고, 지원한 이력이 있는 프로젝트일 경우 이미 지원하였다는 안내와 함께 지원하지 못하도록 막아놓음. 
 
 ### -메인 페이지
 <img src="https://github.com/user-attachments/assets/38a3f9db-8aea-4b97-a84f-1dcb67e15cca" width="400" />
