@@ -78,12 +78,11 @@
 ### -프로젝트 상세페이지
 <img src="https://github.com/user-attachments/assets/838ebee1-b0d1-4c40-af9a-b646d714be79">
 
-- 원하는 포지션 지원 버튼 클릭 시 지원 한마디 내용을 작성하는 모달창이 나오고 예 버튼 클릭 시 지원 완료.
-- 이후 마이페이지에서 나의 지원 현황 확인 가능.
+- 프로젝트 상세페이지에서 해당 게시글 작성자 프로필 사진 클릭 시 모달창으로 해당 유저 프로필 확인.
+- 댓글 작성 시 해당 게시글 작성자에게 댓글 작성 알림.
+- 댓글 작성자 프로필 사진 클릭 시 해당 유저 프로필 모달창으로 확인.
 
-<img src="https://github.com/user-attachments/assets/972c3fec-a1f1-4b32-afe3-8a6a330c53dd" width="600" />
-<img src="https://github.com/user-attachments/assets/ba639010-9dba-435b-a9d7-965c194a10d1" width="400" />
-<img src="https://github.com/user-attachments/assets/da6d9196-b507-4f95-9b33-71dddb5b30ad" width="800" />
+### -필터 검색
 
 - 프로젝트 모집 게시글 작성자는 지원자 확인 페이지에서 지원자들 현황 확인 가능.
 - 내용 클릭 시 승인/거절 모달창이 나오고, 승인 시에 해당 게시글 해당 포지션 현재 인원 증가.
